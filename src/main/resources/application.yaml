@@ -1,3 +1,10 @@
 spring:
   application:
     name: LM-BE
+  jpa:
+      hibernate:
+          ddl-auto: validate
+  docker:
+    compose:
+      skip:
+        in-tests: true
