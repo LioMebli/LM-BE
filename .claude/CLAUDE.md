@@ -19,6 +19,12 @@ Versions (verified 2026-08-01): Java 25 (LTS), Spring Boot 4.1.0, Spring Framewo
   the controller boundary.
 - Centralize exception handling with `@RestControllerAdvice`. No try/catch for
   control flow in controllers.
+- **Error handling is specified in full in `docs/ERROR_HANDLING.md`.** Read it before
+  adding an exception class or touching the handler. In short: the domain never
+  imports `org.springframework.web`, the hierarchy is `BaseException` -> category ->
+  concrete and never four levels deep, constructors take typed parameters and never
+  `Object...`, every exception carries a stable `ErrorCode`, and every error response
+  is RFC 9457 `ProblemDetail` including the ones Spring raises itself.
 - Document endpoints with SpringDoc OpenAPI annotations where behavior isn't obvious
   from the method signature.
 
