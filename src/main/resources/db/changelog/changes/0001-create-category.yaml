@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0001-create-category
+      author: liomebli
+      comment: >-
+        A category is a named group of products. Nesting (parent_id, materialized path),
+        sort order and SEO fields are deliberately absent: nothing writes to this table in
+        LM-10, so no state is being lost by waiting, and adding them to an empty table is a
+        single changeset. See specs/LM-10/data-model.md §2.
+      changes:
+        - createTable:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  generationType: BY DEFAULT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_category
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(160)
+                  constraints:
+                    nullable: false

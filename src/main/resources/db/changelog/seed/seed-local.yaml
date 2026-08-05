@@ -1,0 +1,107 @@
+databaseChangeLog:
+  - changeSet:
+      id: seed-local-catalog
+      author: liomebli
+      contextFilter: local
+      comment: Demo data. Never runs outside local development.
+      changes:
+        - insert:
+            tableName: category
+            columns:
+              - column: {name: name, value: "Ручки меблеві"}
+        - insert:
+            tableName: category
+            columns:
+              - column: {name: name, value: "Петлі"}
+        - insert:
+            tableName: category
+            columns:
+              - column: {name: name, value: "Аксесуари"}
+
+        # Ручки меблеві
+        - insert:
+            tableName: product
+            columns:
+              - column: {name: category_id, valueComputed: "(SELECT id FROM category WHERE name = 'Ручки меблеві')"}
+              - column: {name: name, value: "Ручка-скоба РС-115"}
+              - column: {name: short_description, value: "Алюмінієва ручка-скоба, матове покриття"}
+              - column: {name: description, value: "Класична ручка-скоба для кухонних та офісних меблів. Міжцентрова відстань 128 мм."}
+              - column: {name: availability, value: "IN_STOCK"}
+              - column: {name: is_active, valueBoolean: true}
+        - insert:
+            tableName: product
+            columns:
+              - column: {name: category_id, valueComputed: "(SELECT id FROM category WHERE name = 'Ручки меблеві')"}
+              - column: {name: name, value: "Ручка-кнопка РК-20"}
+              - column: {name: short_description, value: "Кругла ручка-кнопка, хром"}
+              - column: {name: description, value: "Компактна ручка-кнопка для шухляд і фасадів."}
+              - column: {name: availability, value: "IN_STOCK"}
+              - column: {name: is_active, valueBoolean: true}
+        - insert:
+            tableName: product
+            columns:
+              - column: {name: category_id, valueComputed: "(SELECT id FROM category WHERE name = 'Ручки меблеві')"}
+              - column: {name: name, value: "Ручка-профіль ПР-2000"}
+              - column: {name: short_description, value: "Профільна ручка, довжина 2 м"}
+              - column: {name: description, value: "Врізний профіль для фасадів без видимої фурнітури."}
+              - column: {name: availability, value: "MADE_TO_ORDER"}
+              - column: {name: is_active, valueBoolean: true}
+        # The switched-off one: absent from every listing, 404 by identifier.
+        - insert:
+            tableName: product
+            columns:
+              - column: {name: category_id, valueComputed: "(SELECT id FROM category WHERE name = 'Ручки меблеві')"}
+              - column: {name: name, value: "Ручка-скоба РС-90 (знята з продажу)"}
+              - column: {name: short_description, value: "Більше не постачається"}
+              - column: {name: availability, value: "DISCONTINUED"}
+              - column: {name: is_active, valueBoolean: false}
+
+        # Петлі
+        - insert:
+            tableName: product
+            columns:
+              - column: {name: category_id, valueComputed: "(SELECT id FROM category WHERE name = 'Петлі')"}
+              - column: {name: name, value: "Петля накладна 110°"}
+              - column: {name: short_description, value: "Накладна петля з доводчиком"}
+              - column: {name: description, value: "Петля для накладних фасадів, кут відкривання 110°, вбудований доводчик."}
+              - column: {name: availability, value: "IN_STOCK"}
+              - column: {name: is_active, valueBoolean: true}
+        - insert:
+            tableName: product
+            columns:
+              - column: {name: category_id, valueComputed: "(SELECT id FROM category WHERE name = 'Петлі')"}
+              - column: {name: name, value: "Петля внутрішня 165°"}
+              - column: {name: short_description, value: "Для внутрішніх фасадів"}
+              - column: {name: description, value: "Широкий кут відкривання для кутових секцій."}
+              - column: {name: availability, value: "IN_STOCK"}
+              - column: {name: is_active, valueBoolean: true}
+        - insert:
+            tableName: product
+            columns:
+              - column: {name: category_id, valueComputed: "(SELECT id FROM category WHERE name = 'Петлі')"}
+              - column: {name: name, value: "Петля піано 1200 мм"}
+              - column: {name: short_description, value: "Рояльна петля, нержавіюча сталь"}
+              - column: {name: availability, value: "MADE_TO_ORDER"}
+              - column: {name: is_active, valueBoolean: true}
+
+        # Аксесуари is left empty on purpose: the spec's "category with no products" case.
+
+      # insert has no automatic rollback - Liquibase cannot know which rows an insert
+      # produced, so without this block `liquibase rollback` reports the changeset as
+      # irreversible and stops, taking every later changeset with it. Written by hand for
+      # that reason, not for tidiness.
+      #
+      # Deletion is by exact name rather than by category, so a product a developer added
+      # to a seeded category locally is left alone. That row then holds the category back
+      # via ON DELETE RESTRICT (FR-013) and the rollback fails loudly - which is the right
+      # outcome: refusing beats quietly deleting work nobody asked about.
+      rollback:
+        - delete:
+            tableName: product
+            where: >-
+              name IN ('Ручка-скоба РС-115', 'Ручка-кнопка РК-20', 'Ручка-профіль ПР-2000',
+              'Ручка-скоба РС-90 (знята з продажу)', 'Петля накладна 110°',
+              'Петля внутрішня 165°', 'Петля піано 1200 мм')
+        - delete:
+            tableName: category
+            where: "name IN ('Ручки меблеві', 'Петлі', 'Аксесуари')"

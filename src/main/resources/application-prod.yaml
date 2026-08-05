@@ -2,3 +2,16 @@ lm:
   cors:
     admin-origins:
       - https://liomebli.com.ua
+
+management:
+  server:
+    address: 127.0.0.1
+
+# FR-017. The contract is versioned in specs/LM-10/contracts and checked against the running
+# service by OpenApiContractIT, so production serving it buys nothing and costs a bundled
+# third-party interface.
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
