@@ -5,7 +5,9 @@ Derived from the reference implementation in `cookandlaughbe`, with the problems
 found in it corrected. Where this document and that project disagree, this
 document wins.
 
-Owner: Андрій. Claude reviews against this file; it does not write the code.
+Owner: Андрій. Claude writes backend code against this file; the developer reviews it.
+The document is normative for both — it is not a description of what the code happens
+to do, and code that diverges from it is the thing that changes.
 
 ---
 
@@ -204,7 +206,7 @@ catch-all. One shape for every error the API can produce.
 > handler at order 0. Extending the class directly is more explicit and avoids
 > ordering questions — prefer it.
 
-Handler skeleton (shape only — the implementation is Андрій's):
+Handler skeleton (shape only — the bodies are the implementation's business):
 
 ```java
 @RestControllerAdvice
@@ -288,10 +290,28 @@ eighty exception classes, one per message, each used once.
 > **Create a new type when a caller or the handler would treat it differently.
 > Otherwise reuse the category and give it a distinct `ErrorCode`.**
 
+That rule needs one clarification, because read alone it collides with §3 and §7.
+
 `ProductNotFoundException` and `CategoryNotFoundException` both become a 404 and
-nobody catches either — so they are the same *type*, distinguished by `code`, not
-two classes. `SelectionExpiredException` is different: it maps to 410 and the
-frontend shows a different screen. It earns a class.
+nobody catches either — which looks like a case for one shared type. But they carry
+**different `ErrorCode`s**, and §3 requires a typed constructor with the message
+pattern owned by the class that raises it. Collapse them and the call site becomes
+`new NotFoundException(PRODUCT_NOT_FOUND, "Product %d not found".formatted(id))` —
+untyped, with the pattern now homeless; put static factories on the category instead
+and catalog knowledge moves into `common/error`, which §7 forbids.
+
+So: **one concrete class per resource kind is correct.** What the rule forbids is a
+class per *message* within one resource kind, and — the real smell — a concrete class
+that introduces no new `ErrorCode` and is handled identically to its sibling. That one
+should not exist.
+
+`SelectionExpiredException` is a third case: it maps to 410 and the frontend shows a
+different screen, so it earns a class on the strength of **dispatch**, not merely of a
+code.
+
+> Amended 2026-08-05. The original text named these two classes as an example of what
+> *not* to create, which contradicted §3 and §7. Worked through in
+> `specs/LM-10/research.md` R8 when the first feature hit the seam.
 
 ### Built-in exceptions
 
@@ -394,7 +414,8 @@ information leakage (§10).
 6. One `@RestControllerAdvice`, extending `ResponseEntityExceptionHandler`.
 7. RFC 9457 `ProblemDetail` for every error, including Spring's own.
 8. A catch-all exists and leaks nothing.
-9. A new type only when someone would treat it differently.
+9. One concrete type per resource kind and per distinct `ErrorCode` — never one per
+   message, and never one that is handled identically to its sibling.
 10. No library exception crosses a layer boundary; wrap it, keep the cause.
 11. 4xx → `WARN` without stack, 5xx → `ERROR` with stack, `traceId` in both the
     response and the log.

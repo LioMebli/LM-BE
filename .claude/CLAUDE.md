@@ -5,11 +5,14 @@ Versions (verified 2026-08-01): Java 25 (LTS), Spring Boot 4.1.0, Spring Framewo
 
 ## Architecture
 
-- Layered structure: controller -> service -> repository. Controllers stay thin -- no
-  business logic.
+- **Package by feature, layers inside the feature** — `catalog`, `product`,
+  `selection`, `auth`, plus `common` for what is genuinely shared. Never a top-level
+  `controller/`, `service/` or `dto/`. The full tree is `docs/ARCHITECTURE.md` §7.
+- Within a feature the flow is controller -> service -> repository. Controllers stay
+  thin -- no business logic.
 - Entities and DTOs are separate. Use MapStruct for mapping between them. Never expose
   entities directly through the API.
-- Package by feature (e.g. `order`, `product`, `auth`), not by layer.
+- A feature may depend on another feature's **service**, never on its repository.
 
 ## Spring Boot conventions
 
@@ -33,11 +36,17 @@ Versions (verified 2026-08-01): Java 25 (LTS), Spring Boot 4.1.0, Spring Framewo
 - Spring Security + JWT for stateless auth, Google OAuth2 for social login (see
   imported project description -- these are decided).
 - Never log tokens, passwords, or full JWTs.
-- Keep password/secret handling consistent with standard Spring Security practices
-  (BCrypt, no custom crypto for auth unless explicitly discussed).
+- Admin login is Google OAuth2; there is no password to store for normal operation.
+  The disabled-by-default local fallback account uses **Argon2id** via
+  `DelegatingPasswordEncoder` (prefix `{argon2}`) — the current OWASP recommendation,
+  **not BCrypt**. No custom crypto for auth unless explicitly discussed.
 
 ## Database
 
+- **Every identifier is `bigint` / `Long`.** Primary keys and foreign keys alike, in
+  the schema, in the entity and in the OpenAPI contract (`type: integer` with
+  `format: int64`). Never `int`/`Integer`. Industry default, not a capacity argument.
+  Money is the exception and stays `int`: see `docs/ARCHITECTURE.md` §5.3.
 - Liquibase changesets live in `db/changelog/`. One changeset per logical change, never
   edit an already-applied changeset -- add a new one.
 - Prefer explicit column definitions over relying on Hibernate auto-DDL in anything
@@ -48,4 +57,6 @@ Versions (verified 2026-08-01): Java 25 (LTS), Spring Boot 4.1.0, Spring Framewo
 - JUnit 5 + Mockito for unit tests.
 - Testcontainers (real PostgreSQL via `@ServiceConnection`) for integration tests. Do
   not substitute H2.
-- WireMock for stubbing external HTTP dependencies (e.g. payment gateway) in tests.
+- WireMock for stubbing external HTTP dependencies in tests — Google OIDC, the email
+  provider, the GitHub `repository_dispatch` call. There is no payment gateway: v1 has
+  no checkout at all.
