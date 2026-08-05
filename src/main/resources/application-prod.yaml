@@ -1,0 +1,4 @@
+lm:
+  cors:
+    admin-origins:
+      - https://liomebli.com.ua
