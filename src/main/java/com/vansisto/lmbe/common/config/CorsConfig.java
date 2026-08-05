@@ -1,13 +1,12 @@
-package com.vansisto.lmbe.config;
+package com.vansisto.lmbe.common.config;
 
-import com.vansisto.lmbe.properties.CorsProperties;
+import com.vansisto.lmbe.common.logging.CorrelationId;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -17,6 +16,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
+import static com.vansisto.lmbe.common.config.FilterOrder.CORS_FILTER_ORDER;
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration
@@ -28,6 +28,8 @@ public class CorsConfig {
     private static final String PUBLIC_PATH_PATTERN = BASE_PATH.concat("/**");
 
     private static final Duration PREFLIGHT_MAX_AGE = Duration.ofMinutes(30);
+
+    private static final List<String> BROWSER_READABLE_RESPONSE_HEADERS = List.of(CorrelationId.HEADER);
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource(CorsProperties properties) {
@@ -47,7 +49,7 @@ public class CorsConfig {
     public FilterRegistrationBean<CorsFilter> corsFilterRegistration(
             @Qualifier("corsConfigurationSource") CorsConfigurationSource source) {
         FilterRegistrationBean<CorsFilter> registration = new FilterRegistrationBean<>(new CorsFilter(source));
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        registration.setOrder(CORS_FILTER_ORDER);
         return registration;
     }
 
@@ -58,6 +60,7 @@ public class CorsConfig {
         configuration.setAllowedOrigins(origins);
         configuration.setAllowedMethods(List.of(GET.name(), POST.name(), PUT.name(), PATCH.name(), DELETE.name()));
         configuration.setAllowedHeaders(List.of("Content-Type"));
+        configuration.setExposedHeaders(BROWSER_READABLE_RESPONSE_HEADERS);
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(PREFLIGHT_MAX_AGE);
         return configuration;
@@ -81,6 +84,7 @@ public class CorsConfig {
         configuration.addAllowedOrigin(CorsConfiguration.ALL);
         configuration.setAllowedMethods(List.of(GET.name(), HEAD.name()));
         configuration.addAllowedHeader(CorsConfiguration.ALL);
+        configuration.setExposedHeaders(BROWSER_READABLE_RESPONSE_HEADERS);
         configuration.setAllowCredentials(false);
         configuration.setMaxAge(PREFLIGHT_MAX_AGE);
         return configuration;

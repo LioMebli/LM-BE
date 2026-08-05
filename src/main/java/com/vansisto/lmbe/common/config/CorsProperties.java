@@ -1,4 +1,4 @@
-package com.vansisto.lmbe.properties;
+package com.vansisto.lmbe.common.config;
 
 import java.util.List;
 

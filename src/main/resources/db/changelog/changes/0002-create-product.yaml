@@ -1,0 +1,93 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0002-create-product
+      author: liomebli
+      comment: >-
+        A catalogue item belonging to exactly one category. No price and no images: both
+        belong to product_variant and media, which arrive with LM-2 (spec Clarification 1).
+        created_at/updated_at are kept because they are not recoverable later, unlike every
+        other deferred column.
+      changes:
+        - createTable:
+            tableName: product
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  generationType: BY DEFAULT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_product
+                    nullable: false
+              - column:
+                  name: category_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: short_description
+                  type: varchar(512)
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: availability
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamptz
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamptz
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+
+        # ON DELETE RESTRICT is the default, and is stated anyway: FR-013 is a promise the
+        # database keeps, and a promise that depends on a default nobody wrote down is
+        # one refactor away from being silently dropped.
+        - addForeignKeyConstraint:
+            constraintName: fk_product_category
+            baseTableName: product
+            baseColumnNames: category_id
+            referencedTableName: category
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+
+        # varchar + CHECK rather than a PostgreSQL enum type: adding a value to an enum
+        # type is awkward DDL, while widening a CHECK is one ordinary changeset.
+        - sql:
+            sql: >-
+              ALTER TABLE product ADD CONSTRAINT ck_product_availability
+              CHECK (availability IN ('IN_STOCK', 'MADE_TO_ORDER', 'DISCONTINUED'))
+            rollback: ALTER TABLE product DROP CONSTRAINT ck_product_availability
+
+        # The only selective predicate in the feature: products of one category, visible
+        # ones only. No index on is_active alone - at ~1000 rows a sequential scan beats
+        # the round trip that carries the result.
+        - createIndex:
+            indexName: ix_product_category_active
+            tableName: product
+            columns:
+              - column:
+                  name: category_id
+              - column:
+                  name: is_active

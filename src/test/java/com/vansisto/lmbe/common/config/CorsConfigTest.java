@@ -1,8 +1,8 @@
-package com.vansisto.lmbe.config;
+package com.vansisto.lmbe.common.config;
 
 import java.util.List;
 
-import com.vansisto.lmbe.properties.CorsProperties;
+import com.vansisto.lmbe.common.logging.CorrelationId;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.cors.CorsConfiguration;
@@ -49,6 +49,14 @@ class CorsConfigTest {
         CorsConfiguration configuration = resolve("/api/v1/admin/products");
 
         assertThat(configuration.checkOrigin(ADMIN_ORIGIN)).isEqualTo(ADMIN_ORIGIN);
+    }
+
+    @Test
+    void bothSurfacesLetTheBrowserReadTheCorrelationId() {
+        assertThat(resolve("/api/v1/products/1042").getExposedHeaders())
+                .containsExactly(CorrelationId.HEADER);
+        assertThat(resolve("/api/v1/admin/products").getExposedHeaders())
+                .containsExactly(CorrelationId.HEADER);
     }
 
     @Test
