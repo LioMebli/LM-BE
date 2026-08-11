@@ -1,0 +1,16 @@
+# Extends src/main/resources/application.yaml instead of replacing it — that is what moving
+# to a profile bought, and SC-007 is the criterion. Repeat a setting here only where the
+# suite genuinely needs a different value; anything repeated for its own sake is a second
+# copy that will drift.
+
+lm:
+  cors:
+    admin-origins:
+      - http://localhost:4200
+
+# Cleared, not changed: an empty value unsets the inherited 8081, putting actuator back on
+# the application's own port, which is the only place MockMvc can reach it under the MOCK web
+# environment. The one test that needs two real listeners asks for a random port itself.
+management:
+  server:
+    port:
