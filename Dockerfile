@@ -29,7 +29,10 @@ ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=60.0 -XX:InitialRAMPercentage=50.0 -
 
 EXPOSE 8080
 
+# 127.0.0.1 literally, not `localhost`: the image resolves `localhost` to ::1 first, and
+# the aws profile binds management.server.address to 127.0.0.1, which Tomcat opens on IPv4
+# only. busybox wget does not retry the next address, so the name form fails there.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-    CMD wget -qO- http://localhost:8081/actuator/health | grep -q '"status":"UP"' || exit 1
+    CMD wget -qO- http://127.0.0.1:8081/actuator/health | grep -q '"status":"UP"' || exit 1
 
 ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
