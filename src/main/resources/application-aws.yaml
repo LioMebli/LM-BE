@@ -8,10 +8,12 @@ management:
   server:
     address: 127.0.0.1
 
-# FR-017, and it holds for every deployed environment rather than for production alone -
-# this profile is the only one either of them runs. The contract is versioned in
-# specs/LM-10/contracts and checked against the running service by OpenApiContractIT, so
-# serving it buys no coverage and costs a bundled third-party interface.
+# LM-61 FR-008, which widened LM-10 FR-017 from production to every deployed environment -
+# this profile is the only one either of them runs. Both numbers are written out because
+# bare "FR-017" resolves to something unrelated in LM-61's own spec. The contract is
+# versioned in specs/LM-10/contracts and checked against the running service by
+# OpenApiContractIT, so serving it buys no coverage and costs a bundled third-party
+# interface.
 springdoc:
   api-docs:
     enabled: false

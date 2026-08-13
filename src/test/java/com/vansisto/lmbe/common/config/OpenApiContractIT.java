@@ -32,6 +32,9 @@ class OpenApiContractIT extends IntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ApiProperties apiProperties;
+
     @ParameterizedTest
     @ValueSource(strings = {
             "/api/v1/categories",
@@ -43,6 +46,22 @@ class OpenApiContractIT extends IntegrationTest {
         mockMvc.perform(get(API_DOCS))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.paths['" + path + "'].get.responses['200'].content").exists());
+    }
+
+    /**
+     * The published address is the single consumer of {@code LM_API_BASE_URL}, so without
+     * this the value could be dropped or hardcoded again and every other test would stay
+     * green. Two entries is the specific regression: that is what the document declared
+     * until LM-61, one of them production's address baked into Java.
+     */
+    @Test
+    void theDocumentPublishesOneServerAndTakesItsAddressFromConfiguration() throws Exception {
+        String configuredBaseUrl = apiProperties.baseUrl();
+
+        mockMvc.perform(get(API_DOCS))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.servers.length()").value(1))
+                .andExpect(jsonPath("$.servers[0].url").value(configuredBaseUrl));
     }
 
     @Test

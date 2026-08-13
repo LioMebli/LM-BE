@@ -9,21 +9,17 @@ import org.springframework.validation.annotation.Validated;
 
 /**
  * Origins the admin surface answers with credentials. Supplied per environment; see
- * {@code specs/LM-61/contracts/environment-variables.md}.
- *
- * <p>The constraints here answer "did a real address arrive", which is a different question
- * from the one {@code CorsConfig} answers — that a caller-supplied origin is safe to echo
- * back with credentials. Both are load-bearing: this one runs at binding, and the guard in
- * {@code CorsConfig} also covers the bean being constructed directly.
+ * {@code specs/LM-61/contracts/environment-variables.md}. The constraints are what make a
+ * missing {@code LM_ADMIN_ORIGINS} stop startup — {@code specs/LM-61/research.md} R9
+ * records why the placeholder alone does not.
  */
 @Validated
 @ConfigurationProperties(prefix = "lm.cors")
 public record CorsProperties(
-        @NotEmpty List<@Pattern(regexp = ApiProperties.ABSOLUTE_HTTP_URL, message = MUST_BE_ADDRESSES) String>
+        @NotEmpty
+                List<@Pattern(regexp = ABSOLUTE_HTTP_ORIGIN, message = "must each be an absolute http(s) origin; "
+                                + "set LM_ADMIN_ORIGINS") String>
                 adminOrigins) {
 
-    static final String MUST_BE_ADDRESSES =
-            "must each be an absolute http(s) origin. A value still reading ${LM_ADMIN_ORIGINS} means the "
-                    + "variable was never supplied, and the service would otherwise start with a CORS policy "
-                    + "matching no browser at all";
+    private static final String ABSOLUTE_HTTP_ORIGIN = "^https?://\\S+$";
 }

@@ -15,10 +15,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * FR-017, asserted against the profile that ships rather than against the two lines in
- * {@code application-aws.yaml} that implement it — a property file cannot be checked by
- * reading another property file. {@code aws} is the only profile any deployed environment
- * runs, so this covers dev as much as production.
+ * LM-61 FR-008 — the interactive API description is unreachable in <em>any</em> deployed
+ * environment, which widened LM-10 FR-017 from production alone. Asserted against the
+ * profile that ships rather than against the two lines in {@code application-aws.yaml} that
+ * implement it: a property file cannot be checked by reading another property file.
+ * {@code aws} is the only profile any deployed environment runs, so this covers dev too —
+ * which is why the class no longer says "InProduction".
  */
 // Two things this profile demands of its environment, and neither has a default: without
 // them the context fails to start, which is the guarantee AwsProfileDemandsItsAddressesTest
@@ -37,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import(TestcontainersConfiguration.class)
 @ActiveProfiles({TestProfile.NAME, "aws"})
-class OpenApiIsNotServedInProductionIT {
+class OpenApiIsNotServedWhenDeployedIT {
 
     @Autowired
     private MockMvc mockMvc;
