@@ -1,9 +1,9 @@
 databaseChangeLog:
   - changeSet:
-      id: seed-local-catalog
+      id: seed-catalog
       author: liomebli
-      contextFilter: local
-      comment: Demo data. Never runs outside local development.
+      contextFilter: seed
+      comment: Invented catalog. Runs wherever the seed context is asked for - local development, the parity run, and dev on every raise. Never production.
       changes:
         - insert:
             tableName: category

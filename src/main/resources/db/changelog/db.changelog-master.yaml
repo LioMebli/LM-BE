@@ -2,15 +2,17 @@
 # dropped into changes/, picked up in filename order, which is why they are numbered.
 #
 # errorIfMissingOrEmpty is false on both entries so an absent or empty directory is not
-# a startup failure - seed/ contributes nothing outside local development.
+# a startup failure - seed/ contributes nothing unless the seed context is asked for.
 databaseChangeLog:
   - includeAll:
       path: changes
       relativeToChangelogFile: true
       errorIfMissingOrEmpty: false
-  # Demo data for local development only. The `local` context sits on the changesets
-  # themselves rather than here: a guard belongs next to the thing it guards, and a
-  # context declared only at the include site is invisible when reading the file it lets in.
+  # Invented catalog data, admitted only where `seed` is among the runtime contexts:
+  # local development, the parity run, and dev on every raise. Never production. The
+  # context sits on the changesets themselves rather than here: a guard belongs next to
+  # the thing it guards, and a context declared only at the include site is invisible
+  # when reading the file it lets in.
   - includeAll:
       path: seed
       relativeToChangelogFile: true

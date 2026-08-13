@@ -1,0 +1,19 @@
+lm:
+  cors:
+    admin-origins: ${LM_ADMIN_ORIGINS}
+  api:
+    base-url: ${LM_API_BASE_URL}
+
+management:
+  server:
+    address: 127.0.0.1
+
+# FR-017, and it holds for every deployed environment rather than for production alone -
+# this profile is the only one either of them runs. The contract is versioned in
+# specs/LM-10/contracts and checked against the running service by OpenApiContractIT, so
+# serving it buys no coverage and costs a bundled third-party interface.
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

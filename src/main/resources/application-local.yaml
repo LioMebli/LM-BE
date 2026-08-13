@@ -7,7 +7,7 @@ spring:
   jpa:
     show-sql: true
   liquibase:
-    contexts: app,local
+    contexts: app,seed
 
 logging:
   structured:

@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CorsConfigTest {
 
-    private static final String ADMIN_ORIGIN = "https://liomebli.com.ua";
+    private static final String ADMIN_ORIGIN = "https://liomebli.example";
     private static final String FOREIGN_ORIGIN = "https://not-liomebli.example";
 
     private final CorsConfigurationSource source =
