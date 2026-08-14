@@ -8,7 +8,7 @@ package com.vansisto.lmbe.common.error;
  * abstraction earns its place and also why the categories must stay few.
  *
  * <p>{@code ConflictException}, {@code ValidationException} and {@code ExternalServiceException}
- * are the other three categories in {@code docs/ERROR_HANDLING.md} §2. They are not created
+ * are the other three categories in {@code .claude/CLAUDE.md} § Error handling §2. They are not created
  * here: nothing in this feature can throw them, and an abstract class with no subclass is
  * speculative structure. Each arrives with the ticket that first raises it.
  */

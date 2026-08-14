@@ -147,7 +147,7 @@ Liquibase, і це правильна поведінка: мовчазне до�
 |---|---|
 | Розкладка репозиторіїв, режим паритету | [`LM-WORKSPACE/README.md`](../README.md) |
 | Архітектура, схема даних | `../docs/ARCHITECTURE.md` |
-| Обробка помилок — нормативний документ | [`docs/ERROR_HANDLING.md`](docs/ERROR_HANDLING.md) |
+| Обробка помилок — нормативний розділ | [`.claude/CLAUDE.md`](.claude/CLAUDE.md) § Error handling |
 | Конвенції коду | [Confluence](https://liomebli.atlassian.net/wiki/spaces/LioMebli/pages/458846) |
 | Середовища | [Confluence](https://liomebli.atlassian.net/wiki/spaces/LioMebli/pages/589885) |
 | Задачі | [Jira, проєкт LM](https://liomebli.atlassian.net/jira/software/projects/LM/boards/1) |

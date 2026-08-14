@@ -30,7 +30,7 @@ public enum ErrorCode {
 
     /**
      * Syntactic failure at the transport boundary - a non-numeric identifier, a malformed
-     * body. Deliberately not {@code VALIDATION_ERROR}: {@code docs/ERROR_HANDLING.md} §2
+     * body. Deliberately not {@code VALIDATION_ERROR}: {@code .claude/CLAUDE.md} § Error handling §2
      * reserves the {@code ValidationException} category for semantic business-rule
      * failures at 422, and one code name serving both a 400 and a 422 is a contract
      * nobody can branch on.

@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * The contract of {@code docs/ERROR_HANDLING.md} §11: every category is covered by a slice
+ * The contract of {@code .claude/CLAUDE.md} § Error handling §11: every category is covered by a slice
  * test asserting the status <em>and</em> the {@code code}, because the code is the part a
  * client branches on and an untested contract is a wish.
  *
