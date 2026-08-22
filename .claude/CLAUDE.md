@@ -210,11 +210,25 @@ com.vansisto.lmbe
 │       └── web
 │           └── ApiExceptionHandler.java
 ├── catalog
+│   ├── CategoryService.java
+│   └── CategoryNotFoundException.java
+├── product
 │   ├── ProductService.java
 │   └── ProductNotFoundException.java
 └── selection
     └── SelectionExpiredException.java
 ```
+
+**`catalog` and `product` are two features, not one.** The tree above said
+`catalog/ProductService.java` until 2026-08-22, which contradicted both the code — where
+`ProductService` has lived in `product/` since LM-10 — and `docs/ARCHITECTURE.md` §7, which
+lists them separately. Left as it was, it argued for merging two packages every time somebody
+read it.
+
+**Only `NotFoundException` of the four categories exists today.** `ConflictException`,
+`ValidationException` and `ExternalServiceException` are specified in §2 and will be created
+by the first feature that throws one — a category with no thrower is an abstraction with no
+payer, which Principle X forbids. The specification is not the backlog.
 
 - **Root and categories** are shared infrastructure → `common/error`.
 - **Concrete exceptions live with the code that throws them.** A feature package that
