@@ -8,14 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/**
- * FR-013. The foreign key is written in the changeset and would otherwise be verified by
- * nothing — a key that has never been observed rejecting anything is an assumption, not a
- * guarantee.
- *
- * <p>Deliberately goes through JDBC rather than the repository: the point is that the
- * <em>database</em> refuses, not that the mapping happens to make it awkward.
- */
 class ProductSchemaIT extends IntegrationTest {
 
     @Autowired

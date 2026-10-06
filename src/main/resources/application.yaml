@@ -10,9 +10,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    # A lazy association touched after the service returned is a query the web layer never
-    # asked for. Left open, it succeeds and is invisible; closed, it throws where the mistake
-    # is. SC-004 is the criterion this protects.
     open-in-view: false
   docker:
     compose:
@@ -38,6 +35,4 @@ management:
       show-details: always
       group:
         readiness:
-          # Boot's default group is `readinessState` alone, which reports UP with the
-          # database unreachable. Removing `db` breaks nothing and no test fails.
           include: readinessState,db

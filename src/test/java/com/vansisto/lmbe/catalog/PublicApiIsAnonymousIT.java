@@ -13,16 +13,6 @@ import static com.vansisto.lmbe.CatalogFixture.product;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-/**
- * FR-006. Every public response is identical for every caller, including one presenting a
- * token.
- *
- * <p>This is not defensive trivia. It is the property the entire cost model rests on: with
- * no response varying by caller, the whole catalog can be cached at the Cloudflare edge and
- * the origin sees a fraction of real traffic. The test exists so that the first
- * {@code if (user != null)} branch inside a public controller turns red instead of quietly
- * making every cached response wrong for somebody.
- */
 class PublicApiIsAnonymousIT extends IntegrationTest {
 
     private static final String SOME_TOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.e30.signature";

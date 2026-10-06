@@ -39,12 +39,6 @@ public class CorsConfig {
         return source;
     }
 
-    /**
-     * Registered manually because Spring Security is not on the classpath yet. When it
-     * arrives, delete this bean and let the security filter chain consume the
-     * {@code corsConfigurationSource} bean above — running both would emit duplicate
-     * {@code Vary} headers and make it ambiguous which policy applied.
-     */
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilterRegistration(
             @Qualifier("corsConfigurationSource") CorsConfigurationSource source) {

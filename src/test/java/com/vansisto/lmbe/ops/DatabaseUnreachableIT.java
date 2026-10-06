@@ -20,8 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// Stopping the container poisons this context permanently: hence @DirtiesContext, and
-// hence the distinct properties, which give the class a context cache key of its own.
 @SpringBootTest(properties = {
         "spring.datasource.hikari.connection-timeout=2000",
         "spring.datasource.hikari.validation-timeout=1000"
@@ -32,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(TestProfile.NAME)
 class DatabaseUnreachableIT {
 
-    /** Fragments a real SQLException or Hibernate message would carry. */
     private static final String[] INTERNAL_VOCABULARY = {
             "select", "insert", "jdbc", "postgres", "sql", "hikari", "connection", "exception"
     };

@@ -60,9 +60,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
 
-        # ON DELETE RESTRICT is the default, and is stated anyway: FR-013 is a promise the
-        # database keeps, and a promise that depends on a default nobody wrote down is
-        # one refactor away from being silently dropped.
         - addForeignKeyConstraint:
             constraintName: fk_product_category
             baseTableName: product
@@ -72,17 +69,12 @@ databaseChangeLog:
             onDelete: RESTRICT
             onUpdate: RESTRICT
 
-        # varchar + CHECK rather than a PostgreSQL enum type: adding a value to an enum
-        # type is awkward DDL, while widening a CHECK is one ordinary changeset.
         - sql:
             sql: >-
               ALTER TABLE product ADD CONSTRAINT ck_product_availability
               CHECK (availability IN ('IN_STOCK', 'MADE_TO_ORDER', 'DISCONTINUED'))
             rollback: ALTER TABLE product DROP CONSTRAINT ck_product_availability
 
-        # The only selective predicate in the feature: products of one category, visible
-        # ones only. No index on is_active alone - at ~1000 rows a sequential scan beats
-        # the round trip that carries the result.
         - createIndex:
             indexName: ix_product_category_active
             tableName: product

@@ -25,10 +25,6 @@ class PublicCacheIT extends IntegrationTest {
                 .andExpect(header().string(HttpHeaders.CACHE_CONTROL, "max-age=60, public"));
     }
 
-    /**
-     * A cached 404 outlives the fix: the product is created, and callers keep being told it
-     * does not exist until the entry expires.
-     */
     @Test
     void aFailureIsNeverCached() throws Exception {
         mockMvc.perform(get("/api/v1/products/" + ABSENT_PRODUCT_ID))

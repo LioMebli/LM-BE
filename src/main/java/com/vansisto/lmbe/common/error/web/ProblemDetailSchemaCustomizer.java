@@ -11,14 +11,6 @@ import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Component;
 
-/**
- * Publishes the error body {@link ApiExceptionHandler} actually produces.
- *
- * <p>A {@link ProblemDetail}'s extensions are serialised flat, but the schema generated from
- * the class shows them nested under {@code properties} — so a client generated from the
- * document would look for {@code code} one level too deep. Reading the code list from
- * {@link ErrorCode} leaves no second copy of the enum to fall out of step with it.
- */
 @Component
 public class ProblemDetailSchemaCustomizer implements OpenApiCustomizer {
 

@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 
 public class CorrelationIdFilter extends OncePerRequestFilter {
 
-    /** Alphanumerics and {@code . _ -}, up to 64 characters. Admits nothing that can terminate a header or a log line. */
     private static final Pattern ACCEPTABLE = Pattern.compile("[A-Za-z0-9._-]{1,64}");
 
     @Override
@@ -29,7 +28,6 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } finally {
-            // Servlet threads are pooled: a key left behind is inherited by the next request they serve.
             MDC.remove(CorrelationId.MDC_KEY);
         }
     }

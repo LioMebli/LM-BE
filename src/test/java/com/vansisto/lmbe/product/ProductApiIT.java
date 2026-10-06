@@ -64,7 +64,6 @@ class ProductApiIT extends IntegrationTest {
                 .andExpect(jsonPath("$.availability").value("IN_STOCK"));
     }
 
-    /** FR-015: the build needs every product address in one exchange, each with its category. */
     @Test
     void returnsWholeCatalogInOneAnswerWithCategoryOnEachItem() throws Exception {
         Category hinges = categories.save(category("Петлі"));
@@ -76,7 +75,6 @@ class ProductApiIT extends IntegrationTest {
                 .andExpect(jsonPath("$[*].categoryId").exists());
     }
 
-    /** FR-014: indistinguishable from a product that never existed. */
     @Test
     void inactiveProductIsAbsentFromEveryListing() throws Exception {
         mockMvc.perform(get("/api/v1/products"))
@@ -94,11 +92,6 @@ class ProductApiIT extends IntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-    /**
-     * SC-004 as reworded 2026-08-05: a constant query count, not a wall-clock number.
-     * A threshold measured on CI hardware measures the runner; an N+1 here stays invisible
-     * until the catalog is full.
-     */
     @Test
     void fullListingQueryCountDoesNotGrowWithTheCatalog() throws Exception {
         long small = countQueriesForFullListing();

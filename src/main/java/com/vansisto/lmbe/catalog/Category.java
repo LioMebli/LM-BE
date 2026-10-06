@@ -9,13 +9,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * A named group of products.
- *
- * <p>The identifier is the public address: {@code /category/{id}} (ADR-012). It never
- * changes, which is why renaming a category costs nothing and why there is no slug column
- * and no redirect table anywhere in this system.
- */
 @Entity
 @Table(name = "category")
 @Getter

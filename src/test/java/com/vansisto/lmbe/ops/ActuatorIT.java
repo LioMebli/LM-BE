@@ -17,8 +17,6 @@ import java.net.http.HttpResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// Real ports rather than MockMvc: the property under test is that two listeners exist and
-// serve different things, which a single mock dispatcher cannot distinguish.
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = "management.server.port=0")

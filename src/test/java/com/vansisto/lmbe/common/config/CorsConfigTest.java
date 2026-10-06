@@ -28,7 +28,6 @@ class CorsConfigTest {
         assertThat(configuration.getAllowedMethods()).containsExactly("GET", "HEAD");
     }
 
-    /** The admin pattern is a subset of the public one, so this proves the two do not collide. */
     @Test
     void adminSurfaceKeepsStrictPolicyDespiteOverlappingPublicPattern() {
         CorsConfiguration configuration = resolve("/api/v1/admin/products");

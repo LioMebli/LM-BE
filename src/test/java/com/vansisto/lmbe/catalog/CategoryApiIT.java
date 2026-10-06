@@ -71,7 +71,6 @@ class CategoryApiIT extends IntegrationTest {
                         .value(everyItem(is(handles.getId().intValue()))));
     }
 
-    /** An empty collection is a successful answer, not a failure. */
     @Test
     void categoryWithoutProductsAnswersEmptyListNotError() throws Exception {
         mockMvc.perform(get("/api/v1/categories/{id}/products", empty.getId()))
@@ -79,10 +78,6 @@ class CategoryApiIT extends IntegrationTest {
                 .andExpect(jsonPath("$", hasSize(0)));
     }
 
-    /**
-     * An unordered listing is non-deterministic across releases, which turns a no-op
-     * rebuild into a changed prerender diff.
-     */
     @Test
     void listingOrderIsStableAcrossCalls() throws Exception {
         String first = mockMvc.perform(get("/api/v1/categories"))

@@ -19,13 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Thin by design: validate, delegate, map. No business logic.
- *
- * <p>The nested products listing injects {@link ProductService}, never
- * {@code ProductRepository} — a feature may depend on another feature's service and not on
- * its persistence. That is the line that keeps the two features separable.
- */
 @RestController
 @RequestMapping(path = "/api/v1/categories", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor

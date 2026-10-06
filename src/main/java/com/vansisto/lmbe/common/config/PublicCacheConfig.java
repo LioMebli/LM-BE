@@ -15,13 +15,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/** Declares the public catalog cacheable, in one place so a later endpoint cannot forget to. */
 @Configuration
 public class PublicCacheConfig implements WebMvcConfigurer {
 
     private static final String PUBLIC_PATH_PATTERN = "/api/v1/**";
 
-    /** How out of date a catalog answer is allowed to be — the whole of what max-age means. */
     private static final Duration ACCEPTABLE_CATALOG_STALENESS = Duration.ofMinutes(1);
 
     @Override
@@ -29,7 +27,6 @@ public class PublicCacheConfig implements WebMvcConfigurer {
         registry.addInterceptor(new PublicCacheInterceptor()).addPathPatterns(PUBLIC_PATH_PATTERN);
     }
 
-    /** {@code postHandle} is skipped when a handler throws — which is what leaves errors unstamped. */
     private static final class PublicCacheInterceptor implements HandlerInterceptor {
 
         private static final String CACHEABLE = CacheControl

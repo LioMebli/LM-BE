@@ -13,7 +13,6 @@ public class ProductService {
 
     private final ProductRepository products;
 
-    /** FR-015: the whole catalog in one answer, so the build never has to crawl. */
     public List<Product> findAll() {
         return products.findByActiveTrueOrderByIdAsc();
     }

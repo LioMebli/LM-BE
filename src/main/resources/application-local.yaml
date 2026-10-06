@@ -12,6 +12,4 @@ spring:
 logging:
   structured:
     format:
-      # Empty switches structured logging off — Boot applies the JSON encoder only when
-      # this property has text.
       console: ""
