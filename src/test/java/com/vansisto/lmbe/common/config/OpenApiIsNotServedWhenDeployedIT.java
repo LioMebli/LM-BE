@@ -14,21 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * LM-61 FR-008 — the interactive API description is unreachable in <em>any</em> deployed
- * environment, which widened LM-10 FR-017 from production alone. Asserted against the
- * profile that ships rather than against the two lines in {@code application-aws.yaml} that
- * implement it: a property file cannot be checked by reading another property file.
- * {@code aws} is the only profile any deployed environment runs, so this covers dev too —
- * which is why the class no longer says "InProduction".
- */
-// Two things this profile demands of its environment, and neither has a default: without
-// them the context fails to start, which is the guarantee AwsProfileDemandsItsAddressesTest
-// covers separately.
-//
-// The port is restored because the profile binds `management.server.address`, and Boot
-// refuses to start when an address is set while the actuator shares the application's port.
-// The `test` profile clears that port for every other suite, so this one has to put it back.
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         properties = {
