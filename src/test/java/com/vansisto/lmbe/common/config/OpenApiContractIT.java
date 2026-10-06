@@ -16,21 +16,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * Guards the agreement in {@code specs/LM-10/contracts/openapi.yaml}, which LM-11 codes
- * against, from drifting away from what the service generates.
- *
- * <p>The drift it exists to catch is silent: declaring an explicit {@code @ApiResponse} on a
- * method makes SpringDoc stop inferring the successful one, so an endpoint documents only its
- * failures and the response schema disappears from the document entirely. Nothing about the
- * running service changes, and a client generated from the document loses the return type.
- */
 class OpenApiContractIT extends IntegrationTest {
 
     private static final String API_DOCS = "/v3/api-docs";
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ApiProperties apiProperties;
 
     @ParameterizedTest
     @ValueSource(strings = {
@@ -43,6 +37,16 @@ class OpenApiContractIT extends IntegrationTest {
         mockMvc.perform(get(API_DOCS))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.paths['" + path + "'].get.responses['200'].content").exists());
+    }
+
+    @Test
+    void theDocumentPublishesOneServerAndTakesItsAddressFromConfiguration() throws Exception {
+        String configuredBaseUrl = apiProperties.baseUrl();
+
+        mockMvc.perform(get(API_DOCS))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.servers.length()").value(1))
+                .andExpect(jsonPath("$.servers[0].url").value(configuredBaseUrl));
     }
 
     @Test

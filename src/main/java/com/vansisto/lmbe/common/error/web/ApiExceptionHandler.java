@@ -29,7 +29,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * from every deliberate error in the API, which no client can parse generically. An error
  * format that covers half the cases is the same as having none.
  *
- * <p>Full convention: {@code docs/ERROR_HANDLING.md}.
+ * <p>Full convention: {@code .claude/CLAUDE.md} § Error handling.
  */
 @RestControllerAdvice
 @Slf4j

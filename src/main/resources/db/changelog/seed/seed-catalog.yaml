@@ -1,9 +1,9 @@
 databaseChangeLog:
   - changeSet:
-      id: seed-local-catalog
+      id: seed-catalog
       author: liomebli
-      contextFilter: local
-      comment: Demo data. Never runs outside local development.
+      contextFilter: seed
+      comment: Invented catalog. Runs wherever the seed context is asked for - local development, the parity run, and dev on every raise. Never production. The category "Аксесуари" carries no products on purpose, so the catalog has an empty-category case to answer with.
       changes:
         - insert:
             tableName: category
@@ -17,8 +17,6 @@ databaseChangeLog:
             tableName: category
             columns:
               - column: {name: name, value: "Аксесуари"}
-
-        # Ручки меблеві
         - insert:
             tableName: product
             columns:
@@ -46,7 +44,6 @@ databaseChangeLog:
               - column: {name: description, value: "Врізний профіль для фасадів без видимої фурнітури."}
               - column: {name: availability, value: "MADE_TO_ORDER"}
               - column: {name: is_active, valueBoolean: true}
-        # The switched-off one: absent from every listing, 404 by identifier.
         - insert:
             tableName: product
             columns:
@@ -55,8 +52,6 @@ databaseChangeLog:
               - column: {name: short_description, value: "Більше не постачається"}
               - column: {name: availability, value: "DISCONTINUED"}
               - column: {name: is_active, valueBoolean: false}
-
-        # Петлі
         - insert:
             tableName: product
             columns:
@@ -83,18 +78,6 @@ databaseChangeLog:
               - column: {name: short_description, value: "Рояльна петля, нержавіюча сталь"}
               - column: {name: availability, value: "MADE_TO_ORDER"}
               - column: {name: is_active, valueBoolean: true}
-
-        # Аксесуари is left empty on purpose: the spec's "category with no products" case.
-
-      # insert has no automatic rollback - Liquibase cannot know which rows an insert
-      # produced, so without this block `liquibase rollback` reports the changeset as
-      # irreversible and stops, taking every later changeset with it. Written by hand for
-      # that reason, not for tidiness.
-      #
-      # Deletion is by exact name rather than by category, so a product a developer added
-      # to a seeded category locally is left alone. That row then holds the category back
-      # via ON DELETE RESTRICT (FR-013) and the rollback fails loudly - which is the right
-      # outcome: refusing beats quietly deleting work nobody asked about.
       rollback:
         - delete:
             tableName: product

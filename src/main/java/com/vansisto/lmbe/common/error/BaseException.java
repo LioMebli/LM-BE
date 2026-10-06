@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * <p>Nothing in this package imports {@code org.springframework.web}. The domain describes
  * what went wrong; the web layer decides what that means over HTTP. Full convention:
- * {@code docs/ERROR_HANDLING.md}.
+ * {@code .claude/CLAUDE.md} § Error handling.
  */
 public abstract class BaseException extends RuntimeException {
 

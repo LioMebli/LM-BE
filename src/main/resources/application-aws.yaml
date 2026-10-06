@@ -1,0 +1,15 @@
+lm:
+  cors:
+    admin-origins: ${LM_ADMIN_ORIGINS}
+  api:
+    base-url: ${LM_API_BASE_URL}
+
+management:
+  server:
+    address: 127.0.0.1
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

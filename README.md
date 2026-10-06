@@ -115,6 +115,16 @@ docker compose logs postgres
 docker compose down -v
 ```
 
+**`more than one row returned by a subquery` при старті.** Той самий скид тому лікує
+і це. Liquibase упізнає ченджсет за трійкою `id` + `author` + **імʼя файлу**, тож
+після перейменування файлу наповнення у старому томі ченджсет виглядає
+незастосованим і вставляє категорії вдруге; далі кожна вставка товару шукає свою
+категорію підзапитом і знаходить дві.
+
+⚠️ **Скидати том безпечно лише локально** — локальна база не містить нічого, чого не
+відтворює наповнення. Там, де в базі є справжні дані, перейменування файлу ченджсету
+коштує дублікатів, і правильний хід інший: новий ченджсет, що заміщає старий.
+
 **Помилка CORS у браузері.** Приходить із боку фронтенду, лагодиться тут.
 Публічні читання під `/api/v1/**` відкриті для будь-якого джерела, адмінські
 шляхи — лише для списку в `lm.cors.admin-origins` (`application-local.yaml`,
@@ -135,7 +145,7 @@ Liquibase, і це правильна поведінка: мовчазне до�
 |---|---|
 | Розкладка репозиторіїв, режим паритету | [`LM-WORKSPACE/README.md`](../README.md) |
 | Архітектура, схема даних | `../docs/ARCHITECTURE.md` |
-| Обробка помилок — нормативний документ | [`docs/ERROR_HANDLING.md`](docs/ERROR_HANDLING.md) |
+| Обробка помилок — нормативний розділ | [`.claude/CLAUDE.md`](.claude/CLAUDE.md) § Error handling |
 | Конвенції коду | [Confluence](https://liomebli.atlassian.net/wiki/spaces/LioMebli/pages/458846) |
 | Середовища | [Confluence](https://liomebli.atlassian.net/wiki/spaces/LioMebli/pages/589885) |
 | Задачі | [Jira, проєкт LM](https://liomebli.atlassian.net/jira/software/projects/LM/boards/1) |
